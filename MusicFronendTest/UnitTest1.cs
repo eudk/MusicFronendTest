@@ -2,9 +2,8 @@
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
 using OpenQA.Selenium.Firefox;
+using System.Collections.ObjectModel;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-
-
 namespace MusicFrontendTest
 {
 
@@ -17,7 +16,7 @@ namespace MusicFrontendTest
         [ClassInitialize]
         public static void Setup(TestContext context)
         {
-            // _driver = new ChromeDriver(DriverDirectory);
+             //_driver = new ChromeDriver(DriverDirectory);
             _driver = new FirefoxDriver(DriverDirectory);   // firefox driver
             // _driver = new EdgeDriver(DriverDirectory); 
         }
@@ -33,15 +32,18 @@ namespace MusicFrontendTest
         {
 
 
-            _driver.Navigate().GoToUrl("file:///C:/Users/eugdk/Desktop/MusicFrontEnd/index.html"); // åbner siden
+            _driver.Navigate().GoToUrl("C:\\Users\\ramus\\MusicFrontEnd\\MusicFrontEnd\\index.html"); // åbner siden
             Assert.AreEqual("Music Record REST", _driver.Title); // tester om titlen er korrekt
 
             IWebElement buttonElement = _driver.FindElement(By.Id("button")); // finder knappen
             buttonElement.Click();
 
+            WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(3)); // decorator pattern?
+            IWebElement recordsList = wait.Until(d => d.FindElement(By.Id("list")));
+            Assert.IsTrue(recordsList.Text.Contains("Pink Floyd"));
 
-           
-            
+            ReadOnlyCollection<IWebElement> listElements = _driver.FindElements(By.TagName("li"));
+            Assert.AreEqual(10, listElements.Count);
 
         }
     }
